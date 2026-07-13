@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoodShare – Reduce Food Waste, Feed People</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #1a3d2b;
+    --green-mid: #2d6a4f;
+    --green-bright: #40916c;
+    --green-light: #74c69d;
+    --green-pale: #b7e4c7;
+    --green-mist: #d8f3dc;
+    --cream: #faf7f2;
+    --warm-white: #fff9f0;
+    --amber: #f4a261;
+    --amber-dark: #e76f51;
+    --charcoal: #1e2d24;
+    --muted: #6b7f72;
+    --card-bg: #ffffff;
+    --shadow-sm: 0 2px 8px rgba(26,61,43,0.08);
+    --shadow-md: 0 8px 32px rgba(26,61,43,0.12);
+    --shadow-lg: 0 20px 60px rgba(26,61,43,0.16);
+    --radius: 16px;
+    --radius-lg: 24px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(26,61,43,0.08);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px;
+    transition: box-shadow var(--transition);
+  }
+  nav.scrolled { box-shadow: var(--shadow-md); }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem; font-weight: 800;
+    color: var(--green-deep);
+    text-decoration: none;
+  }
+  .nav-logo-icon {
+    width: 38px; height: 38px;
+    background: var(--green-mid);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-icon svg { width: 22px; height: 22px; }
+
+  .nav-links { display: flex; align-items: center; gap: 8px; }
+  .nav-links a {
+    font-size: 0.9rem; font-weight: 500; color: var(--muted);
+    text-decoration: none; padding: 8px 14px; border-radius: 8px;
+    transition: all var(--transition);
+  }
+  .nav-links a:hover { color: var(--green-mid); background: var(--green-mist); }
+  .nav-cta {
+    background: var(--green-mid) !important; color: #fff !important;
+    padding: 9px 20px !important; border-radius: 10px !important;
+  }
+  .nav-cta:hover { background: var(--green-deep) !important; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: var(--green-deep);
+    display: grid; place-items: center;
+    position: relative; overflow: hidden;
+    padding: 100px 5% 60px;
+  }
+  .hero-bg-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: radial-gradient(circle at 20% 50%, #74c69d 0%, transparent 60%),
+                      radial-gradient(circle at 80% 20%, #40916c 0%, transparent 50%),
+                      radial-gradient(circle at 60% 80%, #2d6a4f 0%, transparent 60%);
+  }
+
+  /* Updated floating icons in hero - food recycling themed */
+  .hero-float {
+    position: absolute; pointer-events: none;
+    animation: floatLeaf 8s ease-in-out infinite;
+    opacity: 0.12;
+  }
+  .hero-float:nth-child(2) { top: 12%; right: 7%; animation-delay: -3s; }
+  .hero-float:nth-child(3) { bottom: 18%; left: 4%; animation-delay: -6s; }
+  .hero-float svg { width: 80px; height: 80px; }
+  .hero-float:nth-child(2) svg { width: 55px; height: 55px; }
+  .hero-float:nth-child(3) svg { width: 65px; height: 65px; }
+
+  @keyframes floatLeaf {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(8deg); }
+  }
+
+  .hero-content {
+    position: relative; z-index: 1;
+    text-align: center; max-width: 720px;
+    animation: fadeUp 1s ease both;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(116,198,157,0.15); border: 1px solid rgba(116,198,157,0.3);
+    color: var(--green-pale); font-size: 0.82rem; font-weight: 500;
+    padding: 6px 14px; border-radius: 100px; margin-bottom: 28px;
+    letter-spacing: 0.04em;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 800; line-height: 1.1;
+    color: #fff; margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 em { font-style: italic; font-weight: 300; color: var(--green-light); }
+  .hero-sub {
+    font-size: 1.1rem; color: rgba(255,255,255,0.65);
+    max-width: 520px; margin: 0 auto 40px; line-height: 1.7;
+  }
+  .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+    padding: 14px 28px; border-radius: 12px; border: none;
+    cursor: pointer; text-decoration: none;
+    transition: all var(--transition); letter-spacing: 0.01em;
+  }
+  .btn-primary { background: var(--green-light); color: var(--green-deep); }
+  .btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(116,198,157,0.4); }
+  .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.3); }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.6); transform: translateY(-2px); }
+
+  /* STATS */
+  .stats-strip {
+    background: var(--warm-white);
+    padding: 48px 5%;
+    border-bottom: 1px solid rgba(26,61,43,0.07);
+  }
+  .stats-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .stat-card {
+    background: #fff; border-radius: var(--radius);
+    padding: 28px 24px; text-align: center;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(26,61,43,0.06);
+    transition: all var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--green-mid);
+    transform: scaleX(0); transition: transform var(--transition);
+    transform-origin: left;
+  }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .stat-card:hover::before { transform: scaleX(1); }
+  .stat-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+  .stat-num {
+    font-family: 'Fraunces', serif; font-size: 2.6rem; font-weight: 800;
+    color: var(--green-deep); line-height: 1;
+  }
+  .stat-label { font-size: 0.85rem; color: var(--muted); font-weight: 500; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* SECTIONS */
+  .section { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
+  .section-header { margin-bottom: 48px; }
+  .section-tag {
+    display: inline-block; font-size: 0.78rem; font-weight: 600;
+    color: var(--green-mid); text-transform: uppercase; letter-spacing: 0.1em;
+    background: var(--green-mist); padding: 4px 12px; border-radius: 100px;
+    margin-bottom: 12px;
+  }
+  .section-title { font-family: 'Fraunces', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; color: var(--green-deep); line-height: 1.2; }
+  .section-sub { color: var(--muted); margin-top: 10px; max-width: 500px; }
+
+  /* FORM */
+  .form-wrapper {
+    background: #fff; border-radius: var(--radius-lg);
+    padding: 48px; box-shadow: var(--shadow-md);
+    border: 1px solid rgba(26,61,43,0.07);
+    max-width: 680px;
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--green-deep); display: flex; align-items: center; gap: 6px; }
+  .form-group input, .form-group select {
+    padding: 13px 16px; border: 1.5px solid rgba(26,61,43,0.12);
+    border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    color: var(--charcoal); background: var(--cream);
+    transition: all var(--transition); outline: none; appearance: none;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--green-mid); background: #fff;
+    box-shadow: 0 0 0 3px rgba(45,106,79,0.1);
+  }
+  .form-group input::placeholder { color: #aab5ae; }
+  .input-error { border-color: #e74c3c !important; box-shadow: 0 0 0 3px rgba(231,76,60,0.1) !important; }
+  .error-msg { font-size: 0.78rem; color: #e74c3c; font-weight: 500; }
+  .btn-submit {
+    width: 100%; padding: 16px; margin-top: 8px;
+    background: var(--green-mid); color: #fff;
+    font-size: 1rem; font-weight: 600; border-radius: 12px; border: none;
+    cursor: pointer; transition: all var(--transition);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    letter-spacing: 0.01em;
+  }
+  .btn-submit:hover { background: var(--green-deep); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,61,43,0.25); }
+  .btn-submit:active { transform: translateY(0); }
+
+  /* DONATIONS GRID */
+  .donations-container { max-width: 1200px; margin: 0 auto; padding: 0 5% 80px; }
+  .donations-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
+  .donations-count { font-size: 0.88rem; color: var(--muted); background: #fff; padding: 6px 14px; border-radius: 100px; border: 1px solid rgba(26,61,43,0.1); }
+  .donations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+  .empty-state { grid-column: 1/-1; text-align: center; padding: 64px 24px; color: var(--muted); font-size: 1rem; }
+  .empty-icon { font-size: 3rem; margin-bottom: 12px; display: block; opacity: 0.5; }
+
+  /* DONATION CARD */
+  .donation-card {
+    background: #fff; border-radius: var(--radius);
+    border: 1.5px solid rgba(26,61,43,0.08);
+    overflow: hidden; box-shadow: var(--shadow-sm);
+    transition: all var(--transition);
+    animation: fadeUp 0.5s ease both;
+    position: relative;
+  }
+  .donation-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .donation-card.urgent { border-color: var(--amber) !important; box-shadow: 0 0 0 3px rgba(244,162,97,0.15), var(--shadow-sm); }
+  .donation-card.completed { opacity: 0.7; }
+  .donation-card.completed .card-body { filter: grayscale(0.2); }
+
+  .card-accent { height: 4px; background: linear-gradient(90deg, var(--green-bright), var(--green-light)); }
+  .donation-card.urgent .card-accent { background: linear-gradient(90deg, var(--amber), var(--amber-dark)); }
+  .donation-card.completed .card-accent { background: linear-gradient(90deg, #a0b0a5, #c0cfc5); }
+
+  .card-body { padding: 24px; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .food-name { font-family: 'Fraunces', serif; font-size: 1.25rem; font-weight: 700; color: var(--green-deep); line-height: 1.2; }
+  .food-qty { background: var(--green-mist); color: var(--green-mid); font-size: 0.8rem; font-weight: 600; padding: 4px 10px; border-radius: 100px; white-space: nowrap; margin-left: 8px; flex-shrink: 0; }
+
+  .card-meta { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .meta-item { display: flex; align-items: center; gap: 8px; font-size: 0.87rem; color: var(--muted); }
+  .meta-icon { font-size: 0.95rem; width: 20px; text-align: center; flex-shrink: 0; }
+
+  .urgent-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(244,162,97,0.15); border: 1px solid rgba(244,162,97,0.3);
+    color: #c0622a; font-size: 0.8rem; font-weight: 600;
+    padding: 6px 12px; border-radius: 8px; margin-bottom: 16px;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+  .completed-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--green-mist); color: var(--green-mid);
+    font-size: 0.8rem; font-weight: 600;
+    padding: 6px 12px; border-radius: 8px; margin-bottom: 16px;
+  }
+
+  .card-actions { display: flex; gap: 10px; }
+  .btn-map {
+    flex: 1; padding: 10px 14px; font-size: 0.85rem; font-weight: 600;
+    background: var(--cream); color: var(--green-mid);
+    border: 1.5px solid rgba(45,106,79,0.2); border-radius: 9px;
+    cursor: pointer; text-decoration: none; text-align: center;
+    transition: all var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-map:hover { background: var(--green-mist); border-color: var(--green-mid); transform: translateY(-1px); }
+  .btn-pickup {
+    flex: 1; padding: 10px 14px; font-size: 0.85rem; font-weight: 600;
+    background: var(--green-mid); color: #fff;
+    border: none; border-radius: 9px; cursor: pointer;
+    transition: all var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-pickup:hover:not(:disabled) { background: var(--green-deep); transform: translateY(-1px); }
+  .btn-pickup:disabled { background: #c5d5cc; cursor: not-allowed; }
+  .btn-pickup.done { background: linear-gradient(135deg, #40916c, #52b788); }
+
+  /* DASHBOARD */
+  .dashboard-section { background: var(--green-deep); padding: 80px 5%; }
+  .dashboard-inner { max-width: 1200px; margin: 0 auto; }
+  .dashboard-section .section-tag { background: rgba(116,198,157,0.2); color: var(--green-pale); }
+  .dashboard-section .section-title { color: #fff; }
+  .dashboard-section .section-sub { color: rgba(255,255,255,0.55); }
+
+  .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+  .dash-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius); padding: 32px 24px; text-align: center;
+    transition: all var(--transition);
+  }
+  .dash-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+  .dash-icon { font-size: 2.2rem; margin-bottom: 14px; display: block; }
+  .dash-value { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 800; color: var(--green-light); line-height: 1; margin-bottom: 8px; }
+  .dash-label { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; }
+  .dash-trend { font-size: 0.8rem; color: var(--green-pale); margin-top: 8px; opacity: 0.7; }
+
+  /* HOW IT WORKS */
+  .hiw-section { background: var(--warm-white); padding: 80px 5%; }
+  .hiw-inner { max-width: 1200px; margin: 0 auto; }
+  .hiw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 48px; }
+  .hiw-card {
+    text-align: center; padding: 32px 24px;
+    background: #fff; border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); border: 1px solid rgba(26,61,43,0.06);
+    transition: all var(--transition); position: relative;
+  }
+  .hiw-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .hiw-num {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--green-mid); color: #fff;
+    font-size: 0.8rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hiw-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+  .hiw-title { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; color: var(--green-deep); margin-bottom: 8px; }
+  .hiw-text { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+
+  /* FOOTER */
+  footer { background: var(--charcoal); padding: 48px 5% 32px; color: rgba(255,255,255,0.5); }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+  .footer-brand { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+  .footer-about { font-size: 0.87rem; max-width: 380px; line-height: 1.6; margin-top: 8px; }
+  .footer-right { text-align: right; }
+  .footer-copy { font-size: 0.82rem; }
+  .footer-links { display: flex; gap: 16px; margin-top: 6px; }
+  .footer-links a { font-size: 0.82rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--green-pale); }
+  .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 28px auto 20px; max-width: 1200px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--green-deep); color: #fff;
+    padding: 14px 24px; border-radius: 12px; font-size: 0.9rem; font-weight: 500;
+    box-shadow: var(--shadow-lg); z-index: 200;
+    opacity: 0; transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+    display: flex; align-items: center; gap: 8px;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeUp 0.5s ease both; }
+  .fade-in-d1 { animation-delay: 0.1s; }
+  .fade-in-d2 { animation-delay: 0.2s; }
+  .fade-in-d3 { animation-delay: 0.3s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 0 4%; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .dash-grid { grid-template-columns: 1fr; }
+    .hiw-grid { grid-template-columns: 1fr; }
+    .form-wrapper { padding: 28px 20px; }
+    .footer-inner { flex-direction: column; }
+    .footer-right { text-align: left; }
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--green-pale); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--green-light); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-icon">
+      <!-- Food Recycle Triangle Logo: fork (top-left), spoon (top-right), arrow (bottom) -->
+      <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Triangle outline with rounded corners -->
+        <path d="M22 5 L38 34 Q39 37 36 37 L26 37 Q24 37 23.5 35 L22 32 L20.5 35 Q20 37 18 37 L8 37 Q5 37 6 34 Z"
+              fill="none" stroke="white" stroke-width="2.2" stroke-linejoin="round"/>
+        <!-- Bottom arrow (right-pointing, on the base) -->
+        <path d="M14 37 L28 37" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M25 34 L29 37 L25 40" fill="white"/>
+        <!-- Fork (left side of triangle, tilted) -->
+        <g transform="translate(11, 10) rotate(-35)">
+          <line x1="0" y1="0" x2="0" y2="11" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="-2" y1="0" x2="-2" y2="5" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="2" y1="0" x2="2" y2="5" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M-2 5 Q0 7 2 5" fill="none" stroke="white" stroke-width="1.3"/>
+        </g>
+        <!-- Spoon (right side of triangle, tilted) -->
+        <g transform="translate(31, 10) rotate(35)">
+          <line x1="0" y1="3" x2="0" y2="12" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+          <ellipse cx="0" cy="1.5" rx="2.2" ry="2.8" fill="white"/>
+        </g>
+      </svg>
+    </span>
+    FoodShare
+  </a>
+  <div class="nav-links">
+    <a href="#donate-section">Donate</a>
+    <a href="#donations-section">Browse</a>
+    <a href="#dashboard-section">Dashboard</a>
+    <a href="#donate-section" class="nav-cta">+ Donate Food</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-pattern"></div>
+
+  <!-- Food recycle floating icons replacing leaves -->
+  <div class="hero-float" style="top:10%; left:3%;">
+    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 5 L38 34 Q39 37 36 37 L26 37 Q24 37 23.5 35 L22 32 L20.5 35 Q20 37 18 37 L8 37 Q5 37 6 34 Z"
+            fill="none" stroke="#74c69d" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M14 37 L28 37" stroke="#74c69d" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M25 34 L29 37 L25 40" fill="#74c69d"/>
+      <g transform="translate(11, 10) rotate(-35)">
+        <line x1="0" y1="0" x2="0" y2="11" stroke="#74c69d" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="-2" y1="0" x2="-2" y2="5" stroke="#74c69d" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="2" y1="0" x2="2" y2="5" stroke="#74c69d" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M-2 5 Q0 7 2 5" fill="none" stroke="#74c69d" stroke-width="1.3"/>
+      </g>
+      <g transform="translate(31, 10) rotate(35)">
+        <line x1="0" y1="3" x2="0" y2="12" stroke="#74c69d" stroke-width="1.6" stroke-linecap="round"/>
+        <ellipse cx="0" cy="1.5" rx="2.2" ry="2.8" fill="#74c69d"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-float" style="top:12%; right:7%;">
+    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 5 L38 34 Q39 37 36 37 L26 37 Q24 37 23.5 35 L22 32 L20.5 35 Q20 37 18 37 L8 37 Q5 37 6 34 Z"
+            fill="none" stroke="#74c69d" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M14 37 L28 37" stroke="#74c69d" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M25 34 L29 37 L25 40" fill="#74c69d"/>
+      <g transform="translate(11, 10) rotate(-35)">
+        <line x1="0" y1="0" x2="0" y2="11" stroke="#74c69d" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="-2" y1="0" x2="-2" y2="5" stroke="#74c69d" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="2" y1="0" x2="2" y2="5" stroke="#74c69d" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M-2 5 Q0 7 2 5" fill="none" stroke="#74c69d" stroke-width="1.3"/>
+      </g>
+      <g transform="translate(31, 10) rotate(35)">
+        <line x1="0" y1="3" x2="0" y2="12" stroke="#74c69d" stroke-width="1.6" stroke-linecap="round"/>
+        <ellipse cx="0" cy="1.5" rx="2.2" ry="2.8" fill="#74c69d"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-float" style="bottom:18%; left:4%;">
+    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 5 L38 34 Q39 37 36 37 L26 37 Q24 37 23.5 35 L22 32 L20.5 35 Q20 37 18 37 L8 37 Q5 37 6 34 Z"
+            fill="none" stroke="#74c69d" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M14 37 L28 37" stroke="#74c69d" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M25 34 L29 37 L25 40" fill="#74c69d"/>
+      <g transform="translate(11, 10) rotate(-35)">
+        <line x1="0" y1="0" x2="0" y2="11" stroke="#74c69d" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="-2" y1="0" x2="-2" y2="5" stroke="#74c69d" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="2" y1="0" x2="2" y2="5" stroke="#74c69d" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M-2 5 Q0 7 2 5" fill="none" stroke="#74c69d" stroke-width="1.3"/>
+      </g>
+      <g transform="translate(31, 10) rotate(35)">
+        <line x1="0" y1="3" x2="0" y2="12" stroke="#74c69d" stroke-width="1.6" stroke-linecap="round"/>
+        <ellipse cx="0" cy="1.5" rx="2.2" ry="2.8" fill="#74c69d"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge fade-in">
+      <svg width="14" height="14" viewBox="0 0 44 44" fill="none">
+        <path d="M22 5 L38 34 Q39 37 36 37 L26 37 Q24 37 23.5 35 L22 32 L20.5 35 Q20 37 18 37 L8 37 Q5 37 6 34 Z"
+              fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M14 37 L28 37" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        <path d="M25 34 L29 37 L25 40" fill="currentColor"/>
+      </svg>
+      Community-Powered Food Sharing
+    </div>
+    <h1 class="fade-in fade-in-d1">Reduce Food Waste,<br><em>Feed People</em></h1>
+    <p class="hero-sub fade-in fade-in-d2">Connecting restaurants, hotels, and households with NGOs and volunteers. Every meal saved is a life touched. Join the movement against food waste today.</p>
+    <div class="hero-btns fade-in fade-in-d3">
+      <a href="#donate-section" class="btn btn-primary">🍱 Donate Food</a>
+      <a href="#donations-section" class="btn btn-outline">👀 View Donations</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stats-grid">
+    <div class="stat-card fade-in">
+      <span class="stat-icon">🍛</span>
+      <div class="stat-num" id="stat-meals">0</div>
+      <div class="stat-label">Meals Saved</div>
+    </div>
+    <div class="stat-card fade-in fade-in-d1">
+      <span class="stat-icon">📦</span>
+      <div class="stat-num" id="stat-total">0</div>
+      <div class="stat-label">Total Donations</div>
+    </div>
+    <div class="stat-card fade-in fade-in-d2">
+      <span class="stat-icon">🚴</span>
+      <div class="stat-num" id="stat-active">0</div>
+      <div class="stat-label">Active Pickups</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="hiw-section">
+  <div class="hiw-inner">
+    <div class="section-header">
+      <span class="section-tag">How It Works</span>
+      <h2 class="section-title">Three Simple Steps</h2>
+      <p class="section-sub">Making food donation effortless for everyone involved.</p>
+    </div>
+    <div class="hiw-grid">
+      <div class="hiw-card fade-in">
+        <span class="hiw-num">1</span>
+        <span class="hiw-icon">📝</span>
+        <div class="hiw-title">Post Your Donation</div>
+        <p class="hiw-text">Restaurants, households and hotels list surplus food with details like quantity, location, and pickup window.</p>
+      </div>
+      <div class="hiw-card fade-in fade-in-d1">
+        <span class="hiw-num">2</span>
+        <span class="hiw-icon">🔔</span>
+        <div class="hiw-title">NGOs Get Notified</div>
+        <p class="hiw-text">Nearby volunteers and NGOs instantly see available donations and can accept pickups in real time.</p>
+      </div>
+      <div class="hiw-card fade-in fade-in-d2">
+        <span class="hiw-num">3</span>
+        <span class="hiw-icon">🤲</span>
+        <div class="hiw-title">Food Reaches People</div>
+        <p class="hiw-text">Meals are collected and distributed to those in need — no food wasted, no one left hungry.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DONATE FORM -->
+<div class="section" id="donate-section">
+  <div class="section-header">
+    <span class="section-tag">Donate Food</span>
+    <h2 class="section-title">Share Your Surplus</h2>
+    <p class="section-sub">Fill in the details below and your donation will be listed instantly for nearby volunteers to accept.</p>
+  </div>
+  <div class="form-wrapper fade-in">
+    <div class="form-grid" id="donation-form">
+      <div class="form-group">
+        <label for="food-name">🍽 Food Name</label>
+        <input type="text" id="food-name" placeholder="e.g. Biryani, Bread, Salad">
+        <span class="error-msg" id="err-food-name"></span>
+      </div>
+      <div class="form-group">
+        <label for="food-qty">📦 Quantity</label>
+        <input type="text" id="food-qty" placeholder="e.g. 20 plates, 5 kg">
+        <span class="error-msg" id="err-food-qty"></span>
+      </div>
+      <div class="form-group full">
+        <label for="food-location">📍 Pickup Location</label>
+        <input type="text" id="food-location" placeholder="e.g. 12 Green Street, Chennai">
+        <span class="error-msg" id="err-food-location"></span>
+      </div>
+      <div class="form-group">
+        <label for="food-expiry">⏰ Expiry Time</label>
+        <input type="datetime-local" id="food-expiry">
+        <span class="error-msg" id="err-food-expiry"></span>
+      </div>
+      <div class="form-group">
+        <label for="food-contact">📞 Contact Number</label>
+        <input type="tel" id="food-contact" placeholder="e.g. +91 9876543210">
+        <span class="error-msg" id="err-food-contact"></span>
+      </div>
+      <div class="form-group full">
+        <button class="btn-submit" id="submit-btn" onclick="submitDonation()">
+          <span>🤝</span> List Donation
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DONATIONS -->
+<div class="donations-container" id="donations-section">
+  <div class="donations-header">
+    <div>
+      <span class="section-tag">Live Donations</span>
+      <h2 class="section-title" style="font-family:'Fraunces',serif; font-size:1.8rem; color:var(--green-deep); margin-top:6px;">Available Pickups</h2>
+    </div>
+    <div class="donations-count" id="donations-count">0 donations listed</div>
+  </div>
+  <div class="donations-grid" id="donations-grid">
+    <div class="empty-state" id="empty-state">
+      <span class="empty-icon">🥗</span>
+      <strong>No donations yet.</strong><br>
+      Be the first to share your surplus food!
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard-section" id="dashboard-section">
+  <div class="dashboard-inner">
+    <div class="section-header" style="max-width:500px;">
+      <span class="section-tag">Dashboard</span>
+      <h2 class="section-title" style="color:#fff;">Impact at a Glance</h2>
+      <p class="section-sub">Real-time statistics from our community of donors and volunteers.</p>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card fade-in">
+        <span class="dash-icon">🍛</span>
+        <div class="dash-value" id="dash-meals">0</div>
+        <div class="dash-label">Meals Saved</div>
+        <div class="dash-trend">↑ Updated live</div>
+      </div>
+      <div class="dash-card fade-in fade-in-d1">
+        <span class="dash-icon">📦</span>
+        <div class="dash-value" id="dash-total">0</div>
+        <div class="dash-label">Total Donations</div>
+        <div class="dash-trend">All time count</div>
+      </div>
+      <div class="dash-card fade-in fade-in-d2">
+        <span class="dash-icon">🚴</span>
+        <div class="dash-value" id="dash-active">0</div>
+        <div class="dash-label">Active Pickups</div>
+        <div class="dash-trend">Awaiting volunteers</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
+          <path d="M22 5 L38 34 Q39 37 36 37 L26 37 Q24 37 23.5 35 L22 32 L20.5 35 Q20 37 18 37 L8 37 Q5 37 6 34 Z"
+                fill="none" stroke="#74c69d" stroke-width="2.2" stroke-linejoin="round"/>
+          <path d="M14 37 L28 37" stroke="#74c69d" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M25 34 L29 37 L25 40" fill="#74c69d"/>
+          <g transform="translate(11, 10) rotate(-35)">
+            <line x1="0" y1="0" x2="0" y2="11" stroke="#74c69d" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="-2" y1="0" x2="-2" y2="5" stroke="#74c69d" stroke-width="1.3" stroke-linecap="round"/>
+            <line x1="2" y1="0" x2="2" y2="5" stroke="#74c69d" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M-2 5 Q0 7 2 5" fill="none" stroke="#74c69d" stroke-width="1.3"/>
+          </g>
+          <g transform="translate(31, 10) rotate(35)">
+            <line x1="0" y1="3" x2="0" y2="12" stroke="#74c69d" stroke-width="1.6" stroke-linecap="round"/>
+            <ellipse cx="0" cy="1.5" rx="2.2" ry="2.8" fill="#74c69d"/>
+          </g>
+        </svg>
+        FoodShare
+      </div>
+      <p class="footer-about">FoodShare helps reduce food waste and feed communities. Together we can ensure no meal goes to waste while people go hungry.</p>
+    </div>
+    <div class="footer-right">
+      <p class="footer-copy" style="color:rgba(255,255,255,0.6);">Built for a better world 🌍</p>
+      <div class="footer-links">
+        <a href="#">About</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <p style="text-align:center; font-size:0.82rem; max-width:1200px; margin:0 auto;">
+    © 2026 FoodShare – Reduce Food Waste, Feed People. All rights reserved.
+  </p>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // STATE
+  let donations = [];
+  let mealsSaved = 0;
+  let donationIdCounter = 1;
+
+  // NAV SCROLL
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // TOAST
+  function showToast(msg, emoji) {
+    emoji = emoji || '✅';
+    var t = document.getElementById('toast');
+    t.innerHTML = '<span>' + emoji + '</span> ' + msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }
+
+  // STATS UPDATE
+  function animateNum(el, target) {
+    var start = parseInt(el.textContent) || 0;
+    if (start === target) return;
+    var diff = target - start;
+    var dur = 600;
+    var startTime = performance.now();
+    function tick(now) {
+      var progress = Math.min((now - startTime) / dur, 1);
+      var ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(start + diff * ease);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function updateStats() {
+    var total = donations.length;
+    var active = donations.filter(function(d) { return !d.completed; }).length;
+
+    ['stat-meals', 'dash-meals'].forEach(function(id) { animateNum(document.getElementById(id), mealsSaved); });
+    ['stat-total', 'dash-total'].forEach(function(id) { animateNum(document.getElementById(id), total); });
+    ['stat-active', 'dash-active'].forEach(function(id) { animateNum(document.getElementById(id), active); });
+
+    var countEl = document.getElementById('donations-count');
+    countEl.textContent = total + ' donation' + (total !== 1 ? 's' : '') + ' listed';
+  }
+
+  // EXPIRY UTILS
+  function isUrgent(expiryStr) {
+    var now = new Date();
+    var exp = new Date(expiryStr);
+    var diff = (exp - now) / (1000 * 60 * 60);
+    return diff > 0 && diff < 2;
+  }
+
+  function isExpired(expiryStr) {
+    return new Date(expiryStr) < new Date();
+  }
+
+  function formatExpiry(expiryStr) {
+    var d = new Date(expiryStr);
+    return d.toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function timeRemaining(expiryStr) {
+    var now = new Date();
+    var exp = new Date(expiryStr);
+    var diff = exp - now;
+    if (diff <= 0) return 'Expired';
+    var hrs = Math.floor(diff / 3600000);
+    var mins = Math.floor((diff % 3600000) / 60000);
+    if (hrs > 0) return hrs + 'h ' + mins + 'm remaining';
+    return mins + 'm remaining';
+  }
+
+  // VALIDATE FORM
+  function validateField(id, errId, msg) {
+    var val = document.getElementById(id).value.trim();
+    var errEl = document.getElementById(errId);
+    var inputEl = document.getElementById(id);
+    if (!val) {
+      errEl.textContent = msg;
+      inputEl.classList.add('input-error');
+      return false;
+    }
+    errEl.textContent = '';
+    inputEl.classList.remove('input-error');
+    return true;
+  }
+
+  // SUBMIT DONATION
+  function submitDonation() {
+    var v1 = validateField('food-name', 'err-food-name', 'Please enter the food name.');
+    var v2 = validateField('food-qty', 'err-food-qty', 'Please enter the quantity.');
+    var v3 = validateField('food-location', 'err-food-location', 'Please enter a pickup location.');
+    var v4 = validateField('food-expiry', 'err-food-expiry', 'Please select an expiry time.');
+    var v5 = validateField('food-contact', 'err-food-contact', 'Please enter a contact number.');
+    if (!v1 || !v2 || !v3 || !v4 || !v5) return;
+
+    var donation = {
+      id: donationIdCounter++,
+      name: document.getElementById('food-name').value.trim(),
+      qty: document.getElementById('food-qty').value.trim(),
+      location: document.getElementById('food-location').value.trim(),
+      expiry: document.getElementById('food-expiry').value,
+      contact: document.getElementById('food-contact').value.trim(),
+      completed: false,
+      timestamp: new Date()
+    };
+
+    donations.unshift(donation);
+
+    // reset
+    ['food-name','food-qty','food-location','food-expiry','food-contact'].forEach(function(id) {
+      document.getElementById(id).value = '';
+    });
+
+    renderDonations();
+    updateStats();
+    showToast('Donation listed successfully!', '🍱');
+
+    setTimeout(function() {
+      document.getElementById('donations-section').scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+  }
+
+  // ACCEPT PICKUP — FIXED: uses data-id attribute, not inline onclick with closure issue
+  function acceptPickup(id) {
+    var donation = null;
+    for (var i = 0; i < donations.length; i++) {
+      if (donations[i].id === id) { donation = donations[i]; break; }
+    }
+    if (!donation || donation.completed) return;
+    donation.completed = true;
+    mealsSaved++;
+    renderDonations();
+    updateStats();
+    showToast('Pickup accepted! Great work. 🎉', '🚴');
+  }
+
+  // RENDER DONATIONS
+  function renderDonations() {
+    var grid = document.getElementById('donations-grid');
+    var empty = document.getElementById('empty-state');
+
+    // Remove all cards (but NOT the empty-state element)
+    var existingCards = grid.querySelectorAll('.donation-card');
+    existingCards.forEach(function(card) { card.remove(); });
+
+    if (donations.length === 0) {
+      if (empty) empty.style.display = 'block';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
+
+    donations.forEach(function(d, i) {
+      var urgent = !d.completed && isUrgent(d.expiry);
+      var expired = isExpired(d.expiry);
+
+      var card = document.createElement('div');
+      var cardClass = 'donation-card';
+      if (urgent) cardClass += ' urgent';
+      if (d.completed) cardClass += ' completed';
+      card.className = cardClass;
+      card.style.animationDelay = (i * 0.05) + 's';
+
+      var mapQuery = encodeURIComponent(d.location);
+      var mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + mapQuery;
+
+      var statusBadge = '';
+      if (d.completed) {
+        statusBadge = '<div class="completed-badge">✅ Picked Up – Completed</div>';
+      } else if (urgent) {
+        statusBadge = '<div class="urgent-badge">⚠️ Urgent: Food expiring soon!</div>';
+      } else if (expired) {
+        statusBadge = '<div class="urgent-badge" style="background:rgba(231,76,60,0.1); color:#c0392b; border-color:rgba(231,76,60,0.3);">🚫 Expired</div>';
+      }
+
+      var pickupDisabled = (d.completed || expired) ? 'disabled' : '';
+      var pickupClass = 'btn-pickup' + (d.completed ? ' done' : '');
+      var pickupLabel = d.completed ? '✅ Picked Up' : (expired ? '🚫 Expired' : '🤝 Accept Pickup');
+
+      card.innerHTML =
+        '<div class="card-accent"></div>' +
+        '<div class="card-body">' +
+          '<div class="card-top">' +
+            '<div class="food-name">' + d.name + '</div>' +
+            '<span class="food-qty">' + d.qty + '</span>' +
+          '</div>' +
+          statusBadge +
+          '<div class="card-meta">' +
+            '<div class="meta-item"><span class="meta-icon">📍</span> ' + d.location + '</div>' +
+            '<div class="meta-item"><span class="meta-icon">⏰</span> ' + formatExpiry(d.expiry) + ' &nbsp;·&nbsp; ' + timeRemaining(d.expiry) + '</div>' +
+            '<div class="meta-item"><span class="meta-icon">📞</span> ' + d.contact + '</div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<a href="' + mapsUrl + '" target="_blank" class="btn-map">🗺️ View Location</a>' +
+            '<button class="' + pickupClass + '" data-id="' + d.id + '" ' + pickupDisabled + '>' + pickupLabel + '</button>' +
+          '</div>' +
+        '</div>';
+
+      grid.appendChild(card);
+    });
+
+    // Attach pickup button events after rendering (fixes the closure/inline onclick bug)
+    grid.querySelectorAll('.btn-pickup:not([disabled])').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = parseInt(this.getAttribute('data-id'));
+        acceptPickup(id);
+      });
+    });
+  }
+
+  // SET MIN DATETIME
+  (function setMinDateTime() {
+    var now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('food-expiry').min = now.toISOString().slice(0, 16);
+  })();
+
+  // INIT DEMO DATA
+  function initDemoData() {
+    var now = new Date();
+
+    function addHours(h) {
+      var d = new Date(now);
+      d.setHours(d.getHours() + h);
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+      return d.toISOString().slice(0, 16);
+    }
+
+    var demos = [
+      { name: 'Veg Biriyani', qty: '30 plates', location: 'Taj Hotel, Anna Nagar, Chennai', expiry: addHours(1.2), contact: '+91 9999999999' },
+      { name: 'Idli & Sambar', qty: '50 servings', location: 'Saravana Bhavan, T. Nagar, Chennai', expiry: addHours(3), contact: '+91 9999999999' },
+      { name: 'Paneer Butter Masala and Roti', qty: '2kg', location: 'Pind, Pallavaram, Chennai', expiry: addHours(6), contact: '+91 9999999999' },
+    ];
+
+    demos.forEach(function(d) {
+      donations.push({ id: donationIdCounter++, name: d.name, qty: d.qty, location: d.location, expiry: d.expiry, contact: d.contact, completed: false, timestamp: new Date() });
+    });
+
+    renderDonations();
+    updateStats();
+  }
+
+  // LIVE EXPIRY REFRESH
+  setInterval(function() {
+    if (donations.length > 0) renderDonations();
+  }, 60000);
+
+  // INIT
+  initDemoData();
+
+  // Scroll-triggered fade-ins
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('fade-in'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.hiw-card, .dash-card, .stat-card').forEach(function(el) { observer.observe(el); });
+</script>
+</body>
+</html>
